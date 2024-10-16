@@ -139,7 +139,7 @@ contract EtheremonCastleBattle is EtheremonEnum, BasicAccessControl, SafeMath {
     
     mapping(uint64 => BattleDataLog) battles;
     mapping(address => uint32) trainerCastle;
-    mapping(address => TrainerBattleLog) trannerBattleLog;
+    mapping(address => TrainerBattleLog) trainerBattleLog;
     mapping(uint32 => CastleData) castleData;
     uint32[] activeCastleList;
 
@@ -197,7 +197,7 @@ contract EtheremonCastleBattle is EtheremonEnum, BasicAccessControl, SafeMath {
             castle.index = 0;
         }
         
-        trannerBattleLog[castle.owner].lastCastle = _castleId;
+        trainerBattleLog[castle.owner].lastCastle = _castleId;
     }
     
     function addBattleLog(uint32 _castleId, address _attacker, 
@@ -216,7 +216,7 @@ contract EtheremonCastleBattle is EtheremonEnum, BasicAccessControl, SafeMath {
         
         // 
         CastleData storage castle = castleData[_castleId];
-        TrainerBattleLog storage trainerLog = trannerBattleLog[_attacker];
+        TrainerBattleLog storage trainerLog = trainerBattleLog[_attacker];
         /*
         CASTLE_WIN = 0 
         CASTLE_LOSE = 1 
@@ -254,7 +254,7 @@ contract EtheremonCastleBattle is EtheremonEnum, BasicAccessControl, SafeMath {
     }
     
     function deductTrainerBrick(address _trainer, uint32 _deductAmount) onlyModerators external returns(bool){
-        TrainerBattleLog storage trainerLog = trannerBattleLog[_trainer];
+        TrainerBattleLog storage trainerLog = trainerBattleLog[_trainer];
         if (trainerLog.totalBrick < _deductAmount)
             return false;
         trainerLog.totalBrick -= _deductAmount;
@@ -320,13 +320,13 @@ contract EtheremonCastleBattle is EtheremonEnum, BasicAccessControl, SafeMath {
     }
     
     function getTrainerBattleInfo(address _trainer) constant external returns(uint32, uint32, uint32, uint32, uint64, uint64, uint64, uint64) {
-        TrainerBattleLog memory trainerLog = trannerBattleLog[_trainer];
+        TrainerBattleLog memory trainerLog = trainerBattleLog[_trainer];
         return (trainerLog.totalWin, trainerLog.totalLose, trainerLog.lastCastle, trainerLog.totalBrick, trainerLog.battleList[0], trainerLog.battleList[1], trainerLog.battleList[2], 
             trainerLog.battleList[3]);
     }
     
     function getTrainerBrick(address _trainer) constant external returns(uint32) {
-        return trannerBattleLog[_trainer].totalBrick;
+        return trainerBattleLog[_trainer].totalBrick;
     }
     
     function isOnCastle(uint32 _castleId, uint64 _objId) constant external returns(bool) {
